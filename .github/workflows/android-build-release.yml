@@ -39,6 +39,11 @@ jobs:
       - name: Build Web Application Bundle
         run: npm run build
 
+      - name: Configure Android App Launcher Icons
+        run: |
+          node scripts/prepare-android-icons.js
+          echo "Android App Launcher Icons successfully injected into all mipmap density folders."
+
       - name: Setup Java JDK 17
         uses: actions/setup-java@v4
         with:
