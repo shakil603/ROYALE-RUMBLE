@@ -39,12 +39,6 @@ jobs:
       - name: Build Web Application Bundle
         run: npm run build
 
-      - name: Generate Android App Launcher PNG Icons
-        run: |
-          chmod +x scripts/generate-icons.sh
-          ./scripts/generate-icons.sh
-          echo "All PNG density icons generated and placed into android/app/src/main/res/."
-
       - name: Setup Java JDK 17
         uses: actions/setup-java@v4
         with:
