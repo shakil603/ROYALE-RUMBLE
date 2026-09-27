@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Award, CreditCard, Crown, Info, Play, RotateCcw, Shield, Sparkles, Volume2, VolumeX } from "lucide-react";
+import { Award, CreditCard, Crown, Download, Info, Play, RotateCcw, Shield, Smartphone, Sparkles, Volume2, VolumeX } from "lucide-react";
+import ApkDownloadModal from "./components/ApkDownloadModal";
 import DeveloperModal from "./components/DeveloperModal";
 import HUD from "./components/HUD";
 import IntroSplash from "./components/IntroSplash";
@@ -18,6 +19,7 @@ export default function App() {
   const [showIntro, setShowIntro] = useState(true);
   const [showDevModal, setShowDevModal] = useState(false);
   const [showStoreModal, setShowStoreModal] = useState(false);
+  const [showApkModal, setShowApkModal] = useState(false);
   const [phase, setPhase] = useState<Phase>("menu");
   const [stats, setStats] = useState<GameStats>({ kills: 0, coins: 0, timeSurvived: 0, level: 1 });
   const [hp, setHp] = useState(100);
@@ -112,7 +114,7 @@ export default function App() {
       {/* DEVELOPER MODAL */}
       {showDevModal && <DeveloperModal onClose={() => setShowDevModal(false)} />}
 
-      {/* STORE & ANDROID BILLING MODAL */}
+      {/* STORE & BILLING MODAL */}
       {showStoreModal && (
         <StoreBillingModal
           coins={stats.coins}
@@ -120,6 +122,9 @@ export default function App() {
           onClose={() => setShowStoreModal(false)}
         />
       )}
+
+      {/* APK DOWNLOAD / EXPORT MODAL */}
+      {showApkModal && <ApkDownloadModal onClose={() => setShowApkModal(false)} />}
 
       {/* GAME CANVAS */}
       <canvas ref={canvasRef} className="absolute inset-0" />
@@ -180,6 +185,7 @@ export default function App() {
           highScores={highScores}
           onOpenDev={() => setShowDevModal(true)}
           onOpenStore={() => setShowStoreModal(true)}
+          onOpenApk={() => setShowApkModal(true)}
           onReplayIntro={() => setShowIntro(true)}
         />
       )}
@@ -193,6 +199,7 @@ export default function App() {
           onMute={toggleMute}
           onOpenDev={() => setShowDevModal(true)}
           onOpenStore={() => setShowStoreModal(true)}
+          onOpenApk={() => setShowApkModal(true)}
         />
       )}
 
@@ -207,6 +214,7 @@ export default function App() {
           onRestart={start}
           onOpenDev={() => setShowDevModal(true)}
           onOpenStore={() => setShowStoreModal(true)}
+          onOpenApk={() => setShowApkModal(true)}
           onMenu={() => {
             gameRef.current?.reset();
             if (gameRef.current) {
@@ -233,6 +241,7 @@ function MenuScreen({
   highScores,
   onOpenDev,
   onOpenStore,
+  onOpenApk,
   onReplayIntro,
 }: {
   name: string;
@@ -243,11 +252,12 @@ function MenuScreen({
   highScores: HighScore[];
   onOpenDev: () => void;
   onOpenStore: () => void;
+  onOpenApk: () => void;
   onReplayIntro: () => void;
 }) {
   return (
     <div className="absolute inset-0 z-30 flex items-center justify-center bg-gradient-to-b from-[#0a0e1a]/90 via-[#0a0e1a]/70 to-[#0a0e1a]/95 backdrop-blur-sm">
-      <div className="animate-float-in flex max-h-full w-full max-w-md flex-col items-center gap-4 overflow-y-auto thin-scroll p-6 text-center">
+      <div className="animate-float-in flex max-h-full w-full max-w-md flex-col items-center gap-3.5 overflow-y-auto thin-scroll p-6 text-center">
         {/* DEVELOPER BADGE */}
         <button
           onClick={onOpenDev}
@@ -297,23 +307,29 @@ function MenuScreen({
         <div className="flex flex-col gap-2 w-full">
           <button
             onClick={onStart}
-            className="animate-pulse-glow w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-b from-yellow-300 to-yellow-500 py-4 font-display text-2xl font-black italic uppercase tracking-wider text-black transition-transform hover:scale-[1.03] active:scale-95 shadow-xl"
+            className="animate-pulse-glow w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-b from-yellow-300 to-yellow-500 py-3.5 font-display text-2xl font-black italic uppercase tracking-wider text-black transition-transform hover:scale-[1.03] active:scale-95 shadow-xl"
           >
             <Play className="w-6 h-6 fill-black" /> Drop In
           </button>
 
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-3 gap-1.5">
+            <button
+              onClick={onOpenApk}
+              className="flex items-center justify-center gap-1 rounded-xl border border-green-400/40 bg-green-950/40 py-2.5 font-display text-xs font-bold uppercase tracking-wider text-green-300 hover:bg-green-900/50 transition active:scale-95 shadow"
+            >
+              <Smartphone className="w-3.5 h-3.5 text-green-400" /> Android APK
+            </button>
             <button
               onClick={onOpenStore}
-              className="flex items-center justify-center gap-1.5 rounded-xl border border-cyan-400/40 bg-cyan-950/40 py-2.5 font-display text-sm font-bold uppercase tracking-wider text-cyan-300 hover:bg-cyan-900/50 transition active:scale-95"
+              className="flex items-center justify-center gap-1 rounded-xl border border-cyan-400/40 bg-cyan-950/40 py-2.5 font-display text-xs font-bold uppercase tracking-wider text-cyan-300 hover:bg-cyan-900/50 transition active:scale-95 shadow"
             >
-              <CreditCard className="w-4 h-4 text-cyan-400" /> Store & Billing
+              <CreditCard className="w-3.5 h-3.5 text-cyan-400" /> Store
             </button>
             <button
               onClick={onOpenDev}
-              className="flex items-center justify-center gap-1.5 rounded-xl border border-yellow-400/40 bg-yellow-950/30 py-2.5 font-display text-sm font-bold uppercase tracking-wider text-yellow-300 hover:bg-yellow-900/40 transition active:scale-95"
+              className="flex items-center justify-center gap-1 rounded-xl border border-yellow-400/40 bg-yellow-950/30 py-2.5 font-display text-xs font-bold uppercase tracking-wider text-yellow-300 hover:bg-yellow-900/40 transition active:scale-95 shadow"
             >
-              <Award className="w-4 h-4 text-yellow-400" /> Dev Credits
+              <Award className="w-3.5 h-3.5 text-yellow-400" /> Credits
             </button>
           </div>
         </div>
@@ -371,6 +387,7 @@ function PauseScreen({
   onMute,
   onOpenDev,
   onOpenStore,
+  onOpenApk,
 }: {
   onResume: () => void;
   onRestart: () => void;
@@ -378,10 +395,11 @@ function PauseScreen({
   onMute: () => void;
   onOpenDev: () => void;
   onOpenStore: () => void;
+  onOpenApk: () => void;
 }) {
   return (
     <div className="absolute inset-0 z-30 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-      <div className="animate-float-in flex w-full max-w-xs flex-col items-center gap-3.5 rounded-2xl border border-white/10 bg-[#0d1322] p-6 text-center">
+      <div className="animate-float-in flex w-full max-w-xs flex-col items-center gap-3 rounded-2xl border border-white/10 bg-[#0d1322] p-6 text-center">
         <h2 className="font-display text-4xl font-black italic tracking-widest text-cyan-300">PAUSED</h2>
 
         <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-yellow-400/10 border border-yellow-400/30 text-yellow-300 text-[10px] font-bold">
@@ -392,8 +410,11 @@ function PauseScreen({
         <button onClick={onResume} className="w-full rounded-xl bg-gradient-to-b from-cyan-400 to-blue-500 py-3 font-display text-xl font-black uppercase tracking-wider text-black hover:scale-[1.03] transition active:scale-95">
           Resume
         </button>
+        <button onClick={onOpenApk} className="w-full rounded-xl border border-green-400/40 bg-green-950/40 py-2.5 font-display text-sm font-bold uppercase tracking-wider text-green-300 hover:bg-green-900/50 transition">
+          📱 Android APK Download
+        </button>
         <button onClick={onOpenStore} className="w-full rounded-xl border border-cyan-400/40 bg-cyan-950/40 py-2.5 font-display text-sm font-bold uppercase tracking-wider text-cyan-300 hover:bg-cyan-900/50 transition">
-          Supply Store & Billing
+          Supply Store & Items
         </button>
         <button onClick={onOpenDev} className="w-full rounded-xl border border-white/10 bg-white/5 py-2.5 font-display text-sm font-bold uppercase tracking-wider text-white/80 hover:bg-white/10 transition">
           Developer Info
@@ -419,6 +440,7 @@ function GameOverScreen({
   onRestart,
   onOpenDev,
   onOpenStore,
+  onOpenApk,
   onMenu,
 }: {
   score: number;
@@ -429,11 +451,12 @@ function GameOverScreen({
   onRestart: () => void;
   onOpenDev: () => void;
   onOpenStore: () => void;
+  onOpenApk: () => void;
   onMenu: () => void;
 }) {
   return (
     <div className="absolute inset-0 z-30 flex items-center justify-center bg-gradient-to-b from-red-950/60 via-black/70 to-black/80 backdrop-blur-sm p-4">
-      <div className="animate-float-in flex w-full max-w-sm flex-col items-center gap-3.5 rounded-2xl border border-red-500/40 bg-[#150d18]/90 p-6 text-center">
+      <div className="animate-float-in flex w-full max-w-sm flex-col items-center gap-3 rounded-2xl border border-red-500/40 bg-[#150d18]/90 p-6 text-center">
         <h2 className="font-display text-5xl font-black italic tracking-widest text-red-500">ELIMINATED</h2>
         <div className="text-white/50 text-xs">Wave {wave} Survival Run · Royale Rumble</div>
 
@@ -468,12 +491,15 @@ function GameOverScreen({
           <button onClick={onRestart} className="w-full rounded-xl bg-gradient-to-b from-green-400 to-green-600 py-3 font-display text-lg font-black uppercase tracking-wider text-black hover:scale-[1.02] transition active:scale-95">
             Play Again
           </button>
-          <div className="flex gap-2">
-            <button onClick={onOpenStore} className="flex-1 rounded-xl border border-cyan-400/30 bg-cyan-950/40 py-2.5 font-display text-xs font-bold uppercase tracking-wider text-cyan-300 hover:bg-cyan-900/40 transition">
+          <div className="grid grid-cols-3 gap-1.5">
+            <button onClick={onOpenApk} className="rounded-xl border border-green-400/30 bg-green-950/40 py-2.5 font-display text-xs font-bold uppercase tracking-wider text-green-300 hover:bg-green-900/40 transition">
+              APK
+            </button>
+            <button onClick={onOpenStore} className="rounded-xl border border-cyan-400/30 bg-cyan-950/40 py-2.5 font-display text-xs font-bold uppercase tracking-wider text-cyan-300 hover:bg-cyan-900/40 transition">
               Store
             </button>
-            <button onClick={onMenu} className="flex-1 rounded-xl border border-white/20 bg-white/5 py-2.5 font-display text-xs font-bold uppercase text-white/80 hover:bg-white/10 transition">
-              Main Menu
+            <button onClick={onMenu} className="rounded-xl border border-white/20 bg-white/5 py-2.5 font-display text-xs font-bold uppercase text-white/80 hover:bg-white/10 transition">
+              Menu
             </button>
           </div>
         </div>

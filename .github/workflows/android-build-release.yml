@@ -1,29 +1,30 @@
-name: Royale Rumble Android APK & Billing Release
+name: Build Royale Rumble Android APK
 
 on:
   push:
     branches: [ "main", "master" ]
   workflow_dispatch:
     inputs:
-      release_type:
-        description: 'Release Type (debug / release)'
+      build_type:
+        description: 'Select Build Type'
         required: true
         default: 'release'
         type: choice
         options:
           - release
           - debug
+          - both
 
 permissions:
   contents: write
 
 jobs:
-  build-android-apk:
-    name: Build & Configure Android APK with Google Play Billing
+  build-apk:
+    name: Build Android APK File (Shakil Edition)
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout Code
         uses: actions/checkout@v4
 
       - name: Setup Node.js Environment
@@ -35,7 +36,7 @@ jobs:
       - name: Install Web Dependencies
         run: npm ci || npm install
 
-      - name: Build Web Application
+      - name: Build Web Application Bundle
         run: npm run build
 
       - name: Setup Java JDK 17
@@ -44,27 +45,39 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
-      - name: Accept Android SDK Licenses
-        run: |
-          echo "Configuring preinstalled Android SDK environment..."
-          export ANDROID_HOME="/usr/local/lib/android/sdk"
-          echo "ANDROID_HOME=/usr/local/lib/android/sdk" >> $GITHUB_ENV
-          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses 2>/dev/null || yes | sdkmanager --licenses 2>/dev/null || true
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
 
-      - name: Verify Android Billing Configuration
+      - name: Copy Web Dist Assets into Android Assets
         run: |
-          echo "Verifying Google Play In-App Billing Configuration for Owner: Shakil..."
-          cat android/billing-config.json
+          mkdir -p android/app/src/main/assets/dist
+          cp -r dist/* android/app/src/main/assets/dist/
+          echo "Web game assets embedded into Android APK assets directory."
 
-      - name: Package Web & Android Release Assets
+      - name: Build Android APK with Gradle
+        working-directory: android
         run: |
-          mkdir -p release-bundle/android
-          cp -r dist release-bundle/web-app
-          cp -r android/* release-bundle/android/
-          echo "Royale Rumble Android & Billing Bundle successfully generated for Developer: Shakil"
+          chmod +x ./gradlew || gradle wrapper
+          gradle assembleRelease assembleDebug --stacktrace
 
-      - name: Upload Royale Rumble Android Release Artifacts
+      - name: Prepare APK Files for Download
+        run: |
+          mkdir -p apk-output
+          # Copy release APK
+          if [ -f "android/app/build/outputs/apk/release/app-release.apk" ]; then
+            cp android/app/build/outputs/apk/release/app-release.apk apk-output/RoyaleRumble-Shakil-Release.apk
+          elif [ -f "android/app/build/outputs/apk/release/app-release-unsigned.apk" ]; then
+            cp android/app/build/outputs/apk/release/app-release-unsigned.apk apk-output/RoyaleRumble-Shakil-Release.apk
+          fi
+          # Copy debug APK (Installable on any Android device directly)
+          if [ -f "android/app/build/outputs/apk/debug/app-debug.apk" ]; then
+            cp android/app/build/outputs/apk/debug/app-debug.apk apk-output/RoyaleRumble-Shakil-Debug.apk
+          fi
+          ls -lh apk-output/
+
+      - name: Upload APK Files (Direct Download)
         uses: actions/upload-artifact@v4
         with:
-          name: royale-rumble-android-release
-          path: release-bundle/
+          name: RoyaleRumble-APK-Files
+          path: apk-output/*.apk
+          if-no-files-found: warn
