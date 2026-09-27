@@ -1,0 +1,6 @@
+{
+  "name": "Royale Rumble",
+  "description": "Battle Royale Action game developed and owned by Shakil with intense combat, shrinking zones, customizable loadouts, and mission progression.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
