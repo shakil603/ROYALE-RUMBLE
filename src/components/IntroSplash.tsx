@@ -90,21 +90,30 @@ export default function IntroSplash({ onComplete }: IntroSplashProps) {
         </div>
       )}
 
-      {/* STAGE 2: GAME TITLE & BRANDING */}
+      {/* STAGE 2: GAME TITLE & BRANDING WITH NEW APP ICON */}
       {(stage === "title" || stage === "ready") && (
         <div className="animate-float-in flex flex-col items-center gap-3 text-center px-4 relative z-10">
+          <div className="relative mb-1">
+            <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-yellow-400 to-cyan-400 blur-md opacity-80 animate-pulse" />
+            <img
+              src="/src/assets/images/royale_rumble_icon_1790517303961.jpg"
+              alt="Royale Rumble App Icon"
+              className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl border-2 border-yellow-400/80 shadow-2xl object-cover"
+            />
+          </div>
+
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.4em] text-cyan-400">
             <Shield className="w-4 h-4 text-cyan-400" />
             SHAKIL PRESENTS
           </div>
 
           <div className="flex flex-col items-center">
-            <h1 className="font-display text-6xl sm:text-7xl font-black italic leading-none tracking-tight">
+            <h1 className="font-display text-5xl sm:text-6xl font-black italic leading-none tracking-tight">
               <span className="bg-gradient-to-br from-yellow-300 via-yellow-400 to-orange-500 bg-clip-text text-transparent drop-shadow-[0_0_25px_rgba(250,204,21,0.6)]">
                 ROYALE
               </span>
             </h1>
-            <h1 className="font-display text-5xl sm:text-6xl font-black italic leading-none tracking-tight -mt-1">
+            <h1 className="font-display text-4xl sm:text-5xl font-black italic leading-none tracking-tight -mt-1">
               <span className="bg-gradient-to-br from-cyan-300 via-cyan-400 to-blue-500 bg-clip-text text-transparent drop-shadow-[0_0_25px_rgba(34,211,238,0.6)]">
                 RUMBLE
               </span>

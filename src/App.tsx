@@ -247,18 +247,26 @@ function MenuScreen({
           <Info className="w-3.5 h-3.5 text-white/50 group-hover:text-white" />
         </button>
 
-        {/* LOGO */}
-        <div>
+        {/* APP ICON & LOGO */}
+        <div className="flex flex-col items-center">
+          <div className="relative mb-2">
+            <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-yellow-400 via-cyan-400 to-yellow-400 blur-sm opacity-80 animate-pulse" />
+            <img
+              src="/src/assets/images/royale_rumble_icon_1790517303961.jpg"
+              alt="Royale Rumble Official Icon"
+              className="relative w-20 h-20 rounded-2xl border-2 border-yellow-400/80 shadow-2xl object-cover"
+            />
+          </div>
           <div className="mb-1 text-[11px] font-bold uppercase tracking-[0.4em] text-cyan-300 flex items-center justify-center gap-1.5">
             <Sparkles className="w-3.5 h-3.5 text-cyan-300" />
             Battle Royale Action
           </div>
-          <h1 className="font-display text-6xl font-black italic leading-none tracking-tight">
+          <h1 className="font-display text-5xl sm:text-6xl font-black italic leading-none tracking-tight">
             <span className="bg-gradient-to-br from-yellow-300 via-yellow-400 to-orange-500 bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(250,204,21,0.5)]">
               ROYALE
             </span>
           </h1>
-          <h1 className="font-display text-5xl font-black italic leading-none tracking-tight -mt-1">
+          <h1 className="font-display text-4xl sm:text-5xl font-black italic leading-none tracking-tight -mt-1">
             <span className="bg-gradient-to-br from-cyan-300 to-blue-500 bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(34,211,238,0.5)]">
               RUMBLE
             </span>

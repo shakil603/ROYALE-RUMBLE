@@ -19,9 +19,11 @@ export default function ApkDownloadModal({ onClose }: ApkDownloadModalProps) {
 
         {/* Header */}
         <div className="flex items-center gap-3 mb-4">
-          <div className="p-3 rounded-xl bg-green-400/15 border border-green-400/30 text-green-400">
-            <Smartphone className="w-6 h-6" />
-          </div>
+          <img
+            src="/src/assets/images/royale_rumble_icon_1790517303961.jpg"
+            alt="Royale Rumble App Icon"
+            className="w-14 h-14 rounded-xl border border-green-400/50 shadow-md object-cover shrink-0"
+          />
           <div>
             <h2 className="font-display text-2xl font-black italic tracking-wide text-white">
               ANDROID APK BUILD
