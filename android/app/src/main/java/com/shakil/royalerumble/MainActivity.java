@@ -11,19 +11,18 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 /**
- * Main Activity hosting Royale Rumble top-down action game with Google Play Billing bridge.
+ * Main Activity hosting Royale Rumble top-down battle royale game.
  * Developed & Owned by Shakil.
  */
 public class MainActivity extends Activity {
     private WebView webView;
-    private BillingManager billingManager;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Fullscreen flags for immersive gameplay
+        // Immersive fullscreen for action gameplay
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN
@@ -47,10 +46,6 @@ public class MainActivity extends Activity {
         settings.setMediaPlaybackRequiresUserGesture(false);
         settings.setAllowFileAccess(true);
 
-        // Initialize Google Play Billing Manager and attach JavaScript Interface
-        billingManager = new BillingManager(this, webView);
-        webView.addJavascriptInterface(billingManager, "AndroidBilling");
-
         webView.setWebViewClient(new WebViewClient());
         webView.setWebChromeClient(new WebChromeClient());
 
@@ -60,7 +55,7 @@ public class MainActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        if (webView.canGoBack()) {
+        if (webView != null && webView.canGoBack()) {
             webView.goBack();
         } else {
             super.onBackPressed();

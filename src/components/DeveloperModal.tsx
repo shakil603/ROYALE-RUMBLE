@@ -61,7 +61,7 @@ export default function DeveloperModal({ onClose }: DeveloperModalProps) {
               <div className="flex items-center gap-1.5 text-cyan-400 font-bold mb-1">
                 <Terminal className="w-3.5 h-3.5" /> Build Target
               </div>
-              <div className="text-white/60">Web & Android APK (Google Play Billing Ready)</div>
+              <div className="text-white/60">Web & Android Native APK (60 FPS Performance)</div>
             </div>
           </div>
 
