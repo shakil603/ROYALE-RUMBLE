@@ -38,6 +38,10 @@ android {
             assets.srcDirs = ['src/main/assets']
         }
     }
+
+    aaptOptions {
+        cruncherEnabled = false
+    }
 }
 
 dependencies {
