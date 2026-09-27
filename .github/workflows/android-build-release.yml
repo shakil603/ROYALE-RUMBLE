@@ -47,6 +47,8 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '8.2'
 
       - name: Copy Web Dist Assets into Android Assets
         run: |
@@ -57,21 +59,22 @@ jobs:
       - name: Build Android APK with Gradle
         working-directory: android
         run: |
-          chmod +x ./gradlew || gradle wrapper
-          gradle assembleRelease assembleDebug --stacktrace
+          gradle wrapper --gradle-version 8.2
+          chmod +x ./gradlew
+          ./gradlew assembleDebug assembleRelease --stacktrace
 
       - name: Prepare APK Files for Download
         run: |
           mkdir -p apk-output
+          # Copy debug APK (Directly installable on any Android device without signing key issues)
+          if [ -f "android/app/build/outputs/apk/debug/app-debug.apk" ]; then
+            cp android/app/build/outputs/apk/debug/app-debug.apk apk-output/RoyaleRumble-Shakil-Debug.apk
+          fi
           # Copy release APK
           if [ -f "android/app/build/outputs/apk/release/app-release.apk" ]; then
             cp android/app/build/outputs/apk/release/app-release.apk apk-output/RoyaleRumble-Shakil-Release.apk
           elif [ -f "android/app/build/outputs/apk/release/app-release-unsigned.apk" ]; then
             cp android/app/build/outputs/apk/release/app-release-unsigned.apk apk-output/RoyaleRumble-Shakil-Release.apk
-          fi
-          # Copy debug APK (Installable on any Android device directly)
-          if [ -f "android/app/build/outputs/apk/debug/app-debug.apk" ]; then
-            cp android/app/build/outputs/apk/debug/app-debug.apk apk-output/RoyaleRumble-Shakil-Debug.apk
           fi
           ls -lh apk-output/
 
